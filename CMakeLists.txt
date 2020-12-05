@@ -23,6 +23,19 @@ target_include_directories(pmht
     PRIVATE src
 )
 
+############################################
+#   DATAMODEL LIBRARY
+############################################
+
+add_library(data_model
+    include/santa2K19/data_model.h
+    src/data_model/data_model.cpp
+)
+
+############################################
+#   LINKING LIBRARIES TO MAIN
+############################################
+
 target_link_libraries(main
     PUBLIC pmht
 )
@@ -41,10 +54,10 @@ target_compile_definitions(gtest
 ############################################
 #   TESTS
 ############################################
-add_executable(tests tests/pmht_test.cpp)
+add_executable(tests tests/pmht_test.cpp tests/datamodel_test.cpp)
 #target_sources(tests
 #    PRIVATE
 #        tests/pmht_test.cpp
 #)
 #set_target_properties(tests PROPERTIES COMPILE_FLAGS "$cxx_strict")
-target_link_libraries(tests gtest gtest_main pmht)
+target_link_libraries(tests gtest gtest_main pmht data_model)

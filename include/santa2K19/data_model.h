@@ -11,7 +11,6 @@
 const int N_FAMILIES = 5000;
 const int N_DAYS = 100;
 const int N_CHOICES = 10;
-const 
 
 class DataModel
 {
@@ -33,16 +32,23 @@ DataModel::DataModel(const std::string & family_data_filename)
 
 }
 
-void parseFamiliesCsv(std::ifstream & families_file) {
-    std::string line;
+void DataModel::parseFamiliesCsv(std::ifstream & families_file) {
+    std::string line, acq;
     std::stringstream ss;
+    int family_id, choice_level;
     //I read and throw away the first line containing the intestatin of the csv
     std::getline(families_file, line);
     //NOW I HAVE TO WRITE CODE TO ACTUALLY GET ALL THE LINES IN A WHILE LOOP AND PARSE EACH ONE INTO THE ARRAY
     while( std::getline(families_file, line) ) {
         //in this loop I read all lines
         ss << line;
-        
+        std::getline(ss, acq, ',');
+        family_id = std::stoi(acq);
+        choice_level = 0;
+        while(std::getline(ss, acq, ',')) {
+            this->families_data[family_id][choice_level] = std::stoi(acq);
+            ++choice_level;
+        }
     }
 }
 
