@@ -28,8 +28,13 @@ target_include_directories(pmht
 ############################################
 
 add_library(data_model
-    include/santa2K19/data_model.h
+    #include/santa2K19/data_model.h
     src/data_model/data_model.cpp
+)
+
+target_include_directories(data_model
+    #PUBLIC include
+    PRIVATE src
 )
 
 ############################################
