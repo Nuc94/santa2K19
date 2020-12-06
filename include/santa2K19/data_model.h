@@ -5,6 +5,14 @@
 #include<fstream>
 #include<sstream>
 #include<array>
+#include<unordered_map>
+#include <utility>
+#include <boost/functional/hash.hpp>
+
+//advanced declarations
+
+struct  pair_hash;
+
 
 //PROBLEM CONSTANTS
 
@@ -32,13 +40,33 @@ public:
         }
         return -1;
     }
+    inline int getFamilydayChoiceLevel(const int family_id, const int day) const {
+        std::unordered_map<std::pair<int, int>, int, boost::hash<std::pair<int, int>>>::const_iterator it = this->choice_level.find( std::make_pair(family_id, day) );
+        if(it == this->choice_level.end()) return 10;
+        return it->second;
+    }
 private:
     //matrix containing families choices, one row for each family
     std::array< std::array<int, N_CHOICES>, N_FAMILIES > families_choices;
     //array containing number of components for each family
     std::array<int, N_FAMILIES> families_components;
+    //hash table containing the choice level for a given pair family_id - day
+    std::unordered_map<std::pair<int, int>, int, boost::hash<std::pair<int, int>>> choice_level;
     //internal method to parse families file
     void parseFamiliesCsv(std::ifstream & families_file);
+    void buildChoiceLevels();
+};
+
+
+
+//and here a hash function for out std::pair of ints
+
+struct pair_hash
+{
+    std::size_t operator() (const std::pair<int, int> & pair) const
+    {
+        return pair.first * pair.second;
+    }
 };
 
 #endif

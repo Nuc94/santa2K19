@@ -38,6 +38,22 @@ target_include_directories(data_model
 )
 
 ############################################
+#   CHROMOSOME LIBRARY
+############################################
+
+add_library(chromosome
+    include/santa2K19/chromosome.h
+)
+
+target_include_directories(chromosome
+    PUBLIC include
+)
+
+target_link_libraries(chromosome
+    PUBLIC data_model
+)
+
+############################################
 #   LINKING LIBRARIES TO MAIN
 ############################################
 

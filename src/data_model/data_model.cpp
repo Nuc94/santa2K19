@@ -24,12 +24,21 @@ void DataModel::parseFamiliesCsv(std::ifstream & families_file) {
         choice_level = 0;
         while(choice_level < N_CHOICES) {
             std::getline(ss, acq, ',');
-            this->families_choices[family_id][choice_level] = std::stoi(acq);
+            this->families_choices[family_id][choice_level] = std::stoi(acq) - 1;
             ++choice_level;
         }
         std::getline(ss, acq);
         this->families_components[family_id] = std::stoi(acq);
         ss.str("");
         ss.clear();
+    }
+    this->buildChoiceLevels();
+}
+
+void DataModel::buildChoiceLevels() {
+    for(int family_id = 0; family_id < this->families_choices.size(); ++family_id) {
+        for(int choice_level = 0; choice_level < this->families_choices[family_id].size(); ++choice_level) {
+            this->choice_level.insert( std::make_pair( std::make_pair(family_id, this->families_choices[family_id][choice_level]) , choice_level ) );
+        }
     }
 }
