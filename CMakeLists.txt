@@ -43,6 +43,7 @@ target_include_directories(data_model
 
 add_library(chromosome
     include/santa2K19/chromosome.h
+    src/chromosome/chromosome.cpp
 )
 
 target_include_directories(chromosome
@@ -75,10 +76,10 @@ target_compile_definitions(gtest
 ############################################
 #   TESTS
 ############################################
-add_executable(tests tests/pmht_test.cpp tests/datamodel_test.cpp)
+add_executable(tests tests/pmht_test.cpp tests/datamodel_test.cpp tests/chromosome_test.cpp)
 #target_sources(tests
 #    PRIVATE
 #        tests/pmht_test.cpp
 #)
 #set_target_properties(tests PROPERTIES COMPILE_FLAGS "$cxx_strict")
-target_link_libraries(tests gtest gtest_main pmht data_model)
+target_link_libraries(tests gtest gtest_main pmht data_model chromosome)
