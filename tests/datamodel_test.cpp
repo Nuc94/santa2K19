@@ -27,24 +27,24 @@ TEST(DATAMODEL_TEST, CorrectFamilyComponentsTest) {
 
 TEST(DATAMODEL_TEST, CorrectFamilyDayChoiceLevelTest) {    
     DataModel DM(DEFAULT_FILEPATH);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(0,27), 9);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(0,51), 0);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(0,11), 2);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(0,74), 5);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(0,18), 10);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(0,46), 10);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(0,47), 10);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(0,99), 10);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(0,27), 9);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(0,51), 0);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(0,11), 2);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(0,74), 5);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(0,18), 10);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(0,46), 10);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(0,47), 10);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(0,99), 10);
 
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(4999,46), 9);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(4999,12), 0);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(4999,24), 2);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(4999,39), 5);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(4999,18), 10);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(4999,45), 10);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(4999,47), 10);
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(4999,99), 10);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(4999,46), 9);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(4999,12), 0);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(4999,24), 2);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(4999,39), 5);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(4999,18), 10);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(4999,45), 10);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(4999,47), 10);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(4999,99), 10);
 
-    ASSERT_EQ(DM.getFamilydayChoiceLevel(4977,99), 7);
+    ASSERT_EQ(DM.getFamilyDayChoiceLevel(4977,99), 7);
     
 }

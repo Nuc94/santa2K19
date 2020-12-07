@@ -40,11 +40,12 @@ public:
         }
         return -1;
     }
-    inline int getFamilydayChoiceLevel(const int family_id, const int day) const {
+    inline int getFamilyDayChoiceLevel(const int family_id, const int day) const {
         std::unordered_map<std::pair<int, int>, int, boost::hash<std::pair<int, int>>>::const_iterator it = this->choice_level.find( std::make_pair(family_id, day) );
         if(it == this->choice_level.end()) return 10;
         return it->second;
     }
+    int getFamilyCostAtDay(const int family_id, const int day) const;
 private:
     //matrix containing families choices, one row for each family
     std::array< std::array<int, N_CHOICES>, N_FAMILIES > families_choices;

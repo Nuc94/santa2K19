@@ -42,3 +42,53 @@ void DataModel::buildChoiceLevels() {
         }
     }
 }
+
+int DataModel::getFamilyCostAtDay(const int family_id, const int day) const {
+    int choice_level = this->getFamilyDayChoiceLevel(family_id, day);
+    int family_cost = 0;
+    int family_size = this->getFamilyComponents(family_id);
+    switch (choice_level) {
+        case 0:
+            break;
+        case 1:
+            family_cost += 50;
+            break;
+        case 2:
+            family_cost += 50;
+            family_cost += family_size * 9;
+            break;
+        case 3:
+            family_cost += 100;
+            family_cost += family_size * 9;
+            break;
+        case 4:
+            family_cost += 200;
+            family_cost += family_size * 9;
+            break;
+        case 5:
+            family_cost += 200;
+            family_cost += family_size * 18;
+            break;
+        case 6:
+            family_cost += 300;
+            family_cost += family_size * 18;
+            break;
+        case 7:
+            family_cost += 300;
+            family_cost += family_size * 36;
+            break;
+        case 8:
+            family_cost += 400;
+            family_cost += family_size * 36;
+            break;
+        case 9:
+            family_cost += 500;
+            family_cost += family_size * (36 + 199);
+            break;
+        default:
+            family_cost += 500;
+            family_cost += family_size * (36 + 398);
+            break;
+    }
+    return family_cost;
+}
