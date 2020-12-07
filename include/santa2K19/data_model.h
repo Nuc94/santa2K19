@@ -20,6 +20,8 @@ struct  pair_hash;
 const int N_FAMILIES = 5000;
 const int N_DAYS = 100;
 const int N_CHOICES = 10;
+const int MINIMUM_OCCUPANCY = 125;
+const int MAXIMUM_OCCUPANCY = 300;
 const double OVERSHOOT_PENALTY = 1000000.0; //penalty added to a solution if
                                             //the limitation constraints on
                                             //minimum and maximum occupancy
@@ -65,5 +67,9 @@ private:
     void buildChoiceLevels();
     void buildPenalties();
 };
+
+inline bool legalOccupancy(const int occupancy) {
+    return occupancy >= MINIMUM_OCCUPANCY && occupancy <= MAXIMUM_OCCUPANCY;
+}
 
 #endif

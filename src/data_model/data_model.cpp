@@ -46,11 +46,11 @@ void DataModel::buildChoiceLevels() {
 
 void DataModel::buildPenalties() {
     double penalty;
-    for(int occupancy = 125; occupancy <= 300; ++occupancy) {
+    for(int occupancy = MINIMUM_OCCUPANCY; occupancy <= MAXIMUM_OCCUPANCY; ++occupancy) {
         for(int diff = 0; diff <= 175; ++diff) {
             penalty = (occupancy - 125) / 400;
             penalty *= pow( occupancy, 0.5 + (diff / 50) );
-            this->penaltyByoccupancyAndDiff[occupancy - 125][diff] = penalty;
+            this->penaltyByoccupancyAndDiff[occupancy - MINIMUM_OCCUPANCY][diff] = penalty;
         }
     }
 }
@@ -106,7 +106,7 @@ int DataModel::getFamilyCostAtDay(const int family_id, const int day) const {
 }
 
 double DataModel::getAccoutingCost(const int occupancy, const int diff_with_prev_day) const {
-        if(occupancy >= 125 && occupancy <= 300 && diff_with_prev_day >= 0 && diff_with_prev_day <= 175)
+        if(legalOccupancy(occupancy) && diff_with_prev_day >= 0 && diff_with_prev_day <= 175)
             return this->penaltyByoccupancyAndDiff[occupancy - 125][diff_with_prev_day];
         else return 0.0;
     }
