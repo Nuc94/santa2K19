@@ -8,6 +8,7 @@
 #include<unordered_map>
 #include <utility>
 #include <boost/functional/hash.hpp>
+#include <math.h> //for power at penalty calculation
 
 //advanced declarations
 
@@ -19,6 +20,10 @@ struct  pair_hash;
 const int N_FAMILIES = 5000;
 const int N_DAYS = 100;
 const int N_CHOICES = 10;
+const double OVERSHOOT_PENALTY = 1000000.0; //penalty added to a solution if
+                                            //the limitation constraints on
+                                            //minimum and maximum occupancy
+                                            //per day are violated
 
 class DataModel
 {
@@ -46,6 +51,7 @@ public:
         return it->second;
     }
     int getFamilyCostAtDay(const int family_id, const int day) const;
+    double getAccoutingCost(const int occupancy, const int diff_with_prev_day) const;
 private:
     //matrix containing families choices, one row for each family
     std::array< std::array<int, N_CHOICES>, N_FAMILIES > families_choices;
@@ -53,21 +59,11 @@ private:
     std::array<int, N_FAMILIES> families_components;
     //hash table containing the choice level for a given pair family_id - day
     std::unordered_map<std::pair<int, int>, int, boost::hash<std::pair<int, int>>> choice_level;
+    std::array< std::array<double, 176>, 176 > penaltyByoccupancyAndDiff;
     //internal method to parse families file
     void parseFamiliesCsv(std::ifstream & families_file);
     void buildChoiceLevels();
-};
-
-
-
-//and here a hash function for out std::pair of ints
-
-struct pair_hash
-{
-    std::size_t operator() (const std::pair<int, int> & pair) const
-    {
-        return pair.first * pair.second;
-    }
+    void buildPenalties();
 };
 
 #endif

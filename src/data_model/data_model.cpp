@@ -6,6 +6,8 @@ DataModel::DataModel(const std::string & family_data_filename)
     std::ifstream families_file;
     families_file.open(family_data_filename);
     this->parseFamiliesCsv(families_file);
+    this->buildChoiceLevels();
+    this->buildPenalties();
 }
 
 
@@ -32,13 +34,23 @@ void DataModel::parseFamiliesCsv(std::ifstream & families_file) {
         ss.str("");
         ss.clear();
     }
-    this->buildChoiceLevels();
 }
 
 void DataModel::buildChoiceLevels() {
     for(int family_id = 0; family_id < this->families_choices.size(); ++family_id) {
         for(int choice_level = 0; choice_level < this->families_choices[family_id].size(); ++choice_level) {
             this->choice_level.insert( std::make_pair( std::make_pair(family_id, this->families_choices[family_id][choice_level]) , choice_level ) );
+        }
+    }
+}
+
+void DataModel::buildPenalties() {
+    double penalty;
+    for(int occupancy = 125; occupancy <= 300; ++occupancy) {
+        for(int diff = 0; diff <= 175; ++diff) {
+            penalty = (occupancy - 125) / 400;
+            penalty *= pow( occupancy, 0.5 + (diff / 50) );
+            this->penaltyByoccupancyAndDiff[occupancy - 125][diff] = penalty;
         }
     }
 }
@@ -92,3 +104,9 @@ int DataModel::getFamilyCostAtDay(const int family_id, const int day) const {
     }
     return family_cost;
 }
+
+double DataModel::getAccoutingCost(const int occupancy, const int diff_with_prev_day) const {
+        if(occupancy >= 125 && occupancy <= 300 && diff_with_prev_day >= 0 && diff_with_prev_day <= 175)
+            return this->penaltyByoccupancyAndDiff[occupancy - 125][diff_with_prev_day];
+        else return 0.0;
+    }
