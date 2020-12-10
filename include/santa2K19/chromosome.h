@@ -14,6 +14,7 @@ public:
     Chromosome(const DataModel & input_dm);
     inline double getCost() const { return this->families_cost + this->accounting_cost + this->overshooting_penalty; }
     void elementaryMutation(const int family_id, const int new_day);
+    void singlePointCrossover(Chromosome & other, int crossover_point);
 private:
     double families_cost;
     double accounting_cost;

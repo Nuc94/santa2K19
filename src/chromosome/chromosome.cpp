@@ -61,6 +61,7 @@ double Chromosome::getAccountingCostsAtDay(const int day) const {
 }
 
 void Chromosome::buildOvershootingDaysSet() {
+    this->overshooting_days.reset();
     for(int day = 0; day <= this->daily_occupancy.size(); ++day) {
         if(! legalOccupancy( this->daily_occupancy[day] )) {
             this->overshooting_days.insert(day);
@@ -110,4 +111,31 @@ void Chromosome::elementaryMutation(const int family_id, const int new_day) {
         //and finally I assign the new family to the given day
         this->families_assignments[family_id] = new_day;
     }
+}
+
+void Chromosome::singlePointCrossover(Chromosome & other, int crossover_point) {
+    int copy_support;
+    int lower_range, upper_range;
+    if(crossover_point > N_FAMILIES - 2) crossover_point = N_FAMILIES - 2;
+    if(crossover_point > N_FAMILIES / 2) {
+        lower_range = crossover_point + 1;
+        upper_range = N_FAMILIES;
+    } else {
+        lower_range = 0;
+        upper_range = crossover_point + 1;
+    }
+    for(int i = lower_range; i < upper_range; ++i) {
+        this->daily_occupancy[ this->families_assignments[i] ] -= this->dm.getFamilyComponents(i);
+        other.daily_occupancy[ other.families_assignments[i] ] -= this->dm.getFamilyComponents(i);
+        this->daily_occupancy[ other.families_assignments[i] ] += this->dm.getFamilyComponents(i);
+        other.daily_occupancy[ this->families_assignments[i] ] += this->dm.getFamilyComponents(i);
+        copy_support = this->families_assignments[i];
+        this->families_assignments[i] = other.families_assignments[i];
+        other.families_assignments[i] = copy_support;
+        
+    }
+    this->buildOvershootingDaysSet();
+    this->calculateCost();
+    other.buildOvershootingDaysSet();
+    other.calculateCost();
 }

@@ -30,6 +30,12 @@ public:
             }
         }
     }
+    void reset() {
+        this->elements_contained = 0;
+        for(int i = 0; i < inner_ht.size(); ++i) {
+            inner_ht[i] = 0;
+        }
+    }
     //Class constructor
     PMHT() : elements_contained{0} {}
 private:
