@@ -55,6 +55,25 @@ target_link_libraries(chromosome
 )
 
 ############################################
+#   POPULATION LIBRARY
+############################################
+
+add_library(population
+    include/santa2K19/population.h
+    src/population/population.cpp
+)
+
+target_include_directories(population
+    PUBLIC include
+    PRIVATE src/population
+)
+
+target_link_libraries(population
+    PUBLIC data_model
+    PUBLIC chromosome
+)
+
+############################################
 #   LINKING LIBRARIES TO MAIN
 ############################################
 
@@ -76,10 +95,22 @@ target_compile_definitions(gtest
 ############################################
 #   TESTS
 ############################################
-add_executable(tests tests/pmht_test.cpp tests/datamodel_test.cpp tests/chromosome_test.cpp)
+add_executable(tests
+    tests/pmht_test.cpp
+    tests/datamodel_test.cpp
+    tests/chromosome_test.cpp
+    tests/population_test.cpp
+)
 #target_sources(tests
 #    PRIVATE
 #        tests/pmht_test.cpp
 #)
 #set_target_properties(tests PROPERTIES COMPILE_FLAGS "$cxx_strict")
-target_link_libraries(tests gtest gtest_main pmht data_model chromosome)
+target_link_libraries(tests
+    gtest
+    gtest_main
+    pmht
+    data_model
+    chromosome
+    population
+)
