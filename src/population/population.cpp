@@ -32,15 +32,27 @@ template<int size>
         return result;
     }
 
-/*  this function shall just  */
+/*  this function shall just return a selection according to rank selection criteria */
 int Population::rankSelect(const int avoid) const {
     int up_lim, low_lim, split_point, rand_outcome = std::rand() % this->rank_sel_sum;
     up_lim = this->rank_sel_weights.size();
     low_lim = 0;
-    while(up_lim - low_lim > 1) {
-        split_point = low_lim + ( (up_lim - low_lim) / 2 );
-        if( this->rank_sel_weights[ split_point ] > rand_outcome ) up_lim = split_point;
-        else low_lim = split_point;
+    low_lim = searchLowLim(low_lim, up_lim, rand_outcome, this->rank_sel_weights);
+    if(low_lim == avoid) {
+        up_lim = low_lim + 1;
+        rand_outcome = std::rand() % this->rank_sel_sum;
+        while( rand_outcome >= this->rank_sel_weights[low_lim]
+        && rand_outcome < this->rank_sel_weights[up_lim] )
+            rand_outcome = std::rand() % this->rank_sel_sum;
+        if (rand_outcome >= this->rank_sel_weights[up_lim] ) {
+            low_lim = up_lim;
+            up_lim = this->rank_sel_weights.size();
+        }
+        else {
+            up_lim = low_lim;
+            low_lim = 0;            
+        }
+        low_lim = searchLowLim(low_lim, up_lim, rand_outcome, this->rank_sel_weights);
     }
     return low_lim;
 }

@@ -33,3 +33,15 @@ TEST( POPTEST, RankSelSearchTest ) {
     selection = searchLowLim(0, sel_weights.size(), 54, sel_weights);
     ASSERT_EQ(selection, 9);
 }
+
+TEST( POPTEST, RankSelAvoidTest10Size ) {
+    DataModel DM(DEFAULT_FILEPATH);
+    Population Pop(10,DM);
+    int selection;
+    int avoid = 0;
+    const std::vector<int> & sel_weights = Pop.getRankSelWeigths();
+    for(int i = 0; i < 10000; ++i) {
+        selection = Pop.rankSelect(avoid);
+        ASSERT_NE(selection, avoid);
+    }
+}
