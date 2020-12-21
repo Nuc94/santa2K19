@@ -22,3 +22,14 @@ TEST( POPTEST, SorTest ) {
         ASSERT_TRUE( Pop.getFitnessAt(i) <= Pop.getFitnessAt(i+1) );
     }
 }
+
+TEST( POPTEST, RankSelSearchTest ) {
+    DataModel DM(DEFAULT_FILEPATH);
+    Population Pop(10,DM);
+    int selection;
+    const std::vector<int> & sel_weights = Pop.getRankSelWeigths();
+    selection = searchLowLim(0, sel_weights.size(), 0, sel_weights);
+    ASSERT_EQ(selection, 0);
+    selection = searchLowLim(0, sel_weights.size(), 54, sel_weights);
+    ASSERT_EQ(selection, 9);
+}
