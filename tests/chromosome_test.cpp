@@ -10,3 +10,10 @@ TEST( CHROMOTEST , IniTest ) {
     DataModel DM(DEFAULT_FILEPATH);
     Chromosome c(DM);
 }
+
+TEST( CHROMOTEST , ManyTest ) {
+    const int test_size = 100;
+    DataModel DM(DEFAULT_FILEPATH);
+    for(int i = 0; i < test_size; ++i)
+        Chromosome c(DM);
+}

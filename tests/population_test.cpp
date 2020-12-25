@@ -11,8 +11,15 @@ TEST( POPTEST, IniTest ) {
 
 TEST( POPTEST, SizeTest ) {
     DataModel DM(DEFAULT_FILEPATH);
-    Population Pop(500,DM);
-    ASSERT_EQ(Pop.size(), 500);
+    Population Pop(499,DM);
+    ASSERT_EQ(Pop.size(), 499);
+}
+
+TEST( POPTEST, BigPopTest ) {
+    const int pop_size_test = 50000;
+    DataModel DM(DEFAULT_FILEPATH);
+    Population Pop(pop_size_test,DM);
+    ASSERT_EQ(Pop.size(), pop_size_test);
 }
 
 TEST( POPTEST, SorTest ) {
@@ -57,4 +64,23 @@ TEST( OFFPOLICYTEST, IniTest ) {
     OffspringPolicy OF(&Population::rankSelect);
     OffspringPolicy OFF(&Population::binaryTournamentSelect);
     OffspringPolicy OFFS(&Population::tournamentSelect<4>);
+}
+
+TEST( OFFPOLICYTEST, SelTest ) {
+    
+    const int test_pop_size = 1000;
+    std::vector<int> sel_target;
+
+    OffspringPolicy OF(&Population::rankSelect);
+
+    DataModel DM(DEFAULT_FILEPATH);
+
+    Population Pop(test_pop_size,DM);
+
+    sel_target.reserve( test_pop_size );
+
+    OF.applySelection(&Pop, sel_target, test_pop_size);
+
+    ASSERT_EQ( sel_target.size(), test_pop_size );
+
 }

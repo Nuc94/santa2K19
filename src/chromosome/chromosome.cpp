@@ -12,8 +12,9 @@ void Chromosome::randomizeChromosome() {
 }
 
 void Chromosome::randomizeAssignments() {
+    //std::srand(time(0));
     for(uint i = 0; i < this->families_assignments.size(); ++i) {
-        this->families_assignments[i] == std::rand() % N_DAYS;
+        this->families_assignments[i] = std::rand() % N_DAYS;        
     }
 }
 

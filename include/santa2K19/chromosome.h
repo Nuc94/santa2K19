@@ -4,6 +4,7 @@
 #include "data_model.h"
 #include "pmht.h"
 
+#include <iostream>
 #include <array>
 #include <cstdlib> //for the random number generation and abs
 #include <boost/container/flat_set.hpp>
