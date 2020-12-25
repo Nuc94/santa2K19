@@ -23,6 +23,13 @@ TEST( POPTEST, SorTest ) {
     }
 }
 
+TEST( POPTEST, TourSelBaseTest ) {
+    DataModel DM(DEFAULT_FILEPATH);
+    Population Pop(10,DM);
+    int selection;
+    selection = Pop.tournamentSelect<2>(-1);
+}
+
 TEST( POPTEST, RankSelSearchTest ) {
     DataModel DM(DEFAULT_FILEPATH);
     Population Pop(10,DM);
@@ -44,4 +51,10 @@ TEST( POPTEST, RankSelAvoidTest10Size ) {
         selection = Pop.rankSelect(avoid);
         ASSERT_NE(selection, avoid);
     }
+}
+
+TEST( OFFPOLICYTEST, IniTest ) {
+    OffspringPolicy OF(&Population::rankSelect);
+    OffspringPolicy OFF(&Population::binaryTournamentSelect);
+    OffspringPolicy OFFS(&Population::tournamentSelect<4>);
 }

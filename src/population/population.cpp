@@ -19,19 +19,6 @@ void Population::sortElems() {
     );
 }
 
-template<int size>
-    int Population::tournamentSelect(const int avoid) const {
-        int cand, result, least = this->pop_elems->size() - 1;
-        if(least == avoid && least > 0) least -= 1;
-        result = least;
-        for(int i = 0; i < size; ++i) {
-            cand = std::rand() % this->pop_elems->size();
-            if (cand == avoid) cand = least;
-            result = std::min( result, cand );
-        }
-        return result;
-    }
-
 /*  this function shall just return a selection according to rank selection criteria */
 int Population::rankSelect(const int avoid) const {
     int up_lim, low_lim, split_point, rand_outcome = std::rand() % this->rank_sel_sum;
@@ -77,4 +64,19 @@ int searchLowLim(int low_lim, int up_lim, const int search_objective,
         else low_lim = split_point;
     }
     return low_lim;
+}
+
+
+
+//OffspringPolicy methods
+
+void OffspringPolicy::applySelection(const Population * pop, std::vector<int> & sel_target,
+                        const unsigned int sel_size) const {
+    int avoid, sel;
+    for(int i = 0; i < static_cast<int>(sel_size); ++i) {
+        if(i % 2 == 0) avoid = -1;
+        else avoid = sel;
+        sel = (pop->*this->sel_fun) (avoid);
+        sel_target.push_back(sel);
+    }
 }
