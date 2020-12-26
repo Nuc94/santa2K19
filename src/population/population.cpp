@@ -54,6 +54,31 @@ void Population::buildRankSelWeightsAndSum(unsigned int pop_size) {
     }
 }
 
+void Population::fillByElitism( std::vector<int> & sel_target,
+                        const unsigned int sel_size) const {
+    //this variable is declared to avoid modulo operation
+    int sel = 0;
+    for(int i = 0; i < static_cast<int>(sel_size); ++i) {
+        sel_target.push_back( sel );
+        ++sel;
+        //Operation executed to avoid modulo operation, while ensuring
+        //that an elitist selection doesn't
+        if(sel >= this->pop_elems->size()) sel = 0; 
+    }
+}
+
+void Population::fillAvoiding(  std::vector<int> & sel_target,
+                    const unsigned int sel_size,
+                    selection_avoid_method_type sel_method) const {
+    int avoid, sel;
+    for(int i = 0; i < static_cast<int>(sel_size); ++i) {
+        if(i % 2 == 0) avoid = -1;
+        else avoid = sel;
+        sel = (this->*sel_method) (avoid);
+        sel_target.push_back(sel);
+    }
+}
+
 /*  a function useful for rank selection */
 int searchLowLim(int low_lim, int up_lim, const int search_objective,
                 const std::vector<int> & sel_weights) {
@@ -72,11 +97,5 @@ int searchLowLim(int low_lim, int up_lim, const int search_objective,
 
 void OffspringPolicy::applySelection(const Population * pop, std::vector<int> & sel_target,
                         const unsigned int sel_size) const {
-    int avoid, sel;
-    for(int i = 0; i < static_cast<int>(sel_size); ++i) {
-        if(i % 2 == 0) avoid = -1;
-        else avoid = sel;
-        sel = (pop->*this->sel_fun) (avoid);
-        sel_target.push_back(sel);
-    }
+    (pop->*this->sel_fun) (sel_target, sel_size);
 }
