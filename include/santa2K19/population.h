@@ -80,11 +80,13 @@ private:
     void buildRankSelWeightsAndSum(unsigned int pop_size);
     //method to build a selection vector - a vector containing int positions
     //of elements selected to generate next offspring -
-    std::vector<int> buildSelectionVector(   const evolution_policies & policies,
-                                        const unsigned int sel_dimension) const;
+    std::vector<int> buildSelectionVector(  const evolution_policies & policies,
+                                            const unsigned int sel_dimension) const;
     //with this method we just obtain a vector with the unique pointers to
     //chromosomes at the right positions to then perform crossover and mutation
     std::unique_ptr< pop_container_type > buildNextPopElems(const std::vector<int> & sel_vector) const;
+    //method to apply crossover and mutation operators
+    void applyPolicyEvolutionOperators(const evolution_policies & policies);
     //private selection method to invoke methods which avoid
     //the previous element selection
     void fillAvoiding(  std::vector<int> & sel_target,
@@ -111,6 +113,8 @@ public:
                     cross_fun(input_cross_fun), mut_fun(input_mut_fun) {};
     void applySelection(const Population * pop, std::vector<int> & sel_target,
                         const unsigned int sel_size) const;
+    void applyEvolutionOperators(const std::unique_ptr< pop_container_type > & pop_elems,
+                                const int low_limit, const int up_limit) const;
 private:
     const selection_fill_method sel_fun;
     const crossover_policy_type cross_fun;

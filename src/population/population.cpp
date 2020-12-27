@@ -13,7 +13,9 @@ Population::Population(const unsigned int pop_size, const DataModel & input_dm) 
 void Population::evolve(const evolution_policies & policies) {
     int next_pop_dim = getNextPopDimension(policies);
     std::vector<int> sel_vector = this->buildSelectionVector(policies, next_pop_dim);
-    std::unique_ptr< pop_container_type > pop_elems = this->buildNextPopElems(sel_vector);
+    this->pop_elems = this->buildNextPopElems(sel_vector);
+    this->applyPolicyEvolutionOperators(policies);
+    this->sortElems();
 }
 
 void Population::sortElems() {
@@ -57,6 +59,16 @@ void Population::buildRankSelWeightsAndSum(unsigned int pop_size) {
     for(int i = 0; i < this->pop_elems->size(); ++i) {
         this->rank_sel_weights.push_back( this->rank_sel_sum += pop_size );
         --pop_size;
+    }
+}
+
+//method to apply crossover and mutation operators
+void Population::applyPolicyEvolutionOperators(const evolution_policies & policies) {
+    int up_limit, low_limit = 0;
+    for(const auto & policy : policies) {
+        up_limit = low_limit + policy.first;
+        policy.second->applyEvolutionOperators(this->pop_elems, low_limit, up_limit);
+        low_limit = up_limit;
     }
 }
 
@@ -148,4 +160,22 @@ int getNextPopDimension(const evolution_policies & policies) {
 void OffspringPolicy::applySelection(const Population * pop, std::vector<int> & sel_target,
                         const unsigned int sel_size) const {
     (pop->*this->sel_fun) (sel_target, sel_size);
+}
+
+void OffspringPolicy::applyEvolutionOperators(
+        const std::unique_ptr< pop_container_type > & pop_elems,
+        const int low_limit, const int up_limit
+    ) const {
+    crossover_policy_type crfun = this->cross_fun;
+    mutation_policy_type mufun = this->mut_fun;
+    if( this->cross_fun != nullptr ) {
+        for(int i = low_limit; i < up_limit - 1; ++i) {
+            (*(pop_elems->at(i)).*(this->cross_fun)) ( *pop_elems->operator[](i + 1) );
+        }
+    }
+    if( this->mut_fun != nullptr ) {
+        for(int i = low_limit; i < up_limit; ++i) {
+            (*(pop_elems->at(i)).*(this->mut_fun)) ();
+        }
+    }
 }

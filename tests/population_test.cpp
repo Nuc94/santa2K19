@@ -163,16 +163,17 @@ TEST( OFFPOLICYTEST, EliTestOverloop ) {
 
 TEST( EVOTEST, NextPopIniTest ) {
     const int test_pop_size = 50;
-    OffspringPolicy OF(&Population::fillByElitism);
+    const int next_pop_size = 70;
 
     evolution_policies ev_pol;
 
-    ev_pol.push_back( std::make_pair(test_pop_size, std::make_unique<OffspringPolicy>( &Population::fillByTournamentSelect<2> ) ) );
+    ev_pol.push_back( std::make_pair(next_pop_size, std::make_unique<OffspringPolicy>( &Population::fillByTournamentSelect<2>, &Chromosome::randomSinglePointCrossover, &Chromosome::randomElementaryMutation ) ) );
 
     DataModel DM(DEFAULT_FILEPATH);
     Population Pop(test_pop_size,DM);
 
     Pop.evolve(ev_pol);
 
+    ASSERT_EQ(next_pop_size, Pop.size());
 
 }

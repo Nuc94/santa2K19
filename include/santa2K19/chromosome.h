@@ -15,7 +15,13 @@ public:
     Chromosome(const DataModel & input_dm);
     inline double getCost() const { return this->families_cost + this->accounting_cost + this->overshooting_penalty; }
     void elementaryMutation(const int family_id, const int new_day);
+    inline void randomElementaryMutation() {
+        this->elementaryMutation(std::rand() % N_FAMILIES, std::rand() % N_DAYS);
+    }
     void singlePointCrossover(Chromosome & other, int crossover_point);
+    inline void randomSinglePointCrossover(Chromosome & other) {
+        this->singlePointCrossover(other, std::rand() % (N_FAMILIES - 1));
+    }
 private:
     double families_cost;
     double accounting_cost;

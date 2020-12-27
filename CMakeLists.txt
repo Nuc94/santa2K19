@@ -79,6 +79,9 @@ target_link_libraries(population
 
 target_link_libraries(main
     PUBLIC pmht
+    PUBLIC data_model
+    PUBLIC chromosome
+    PUBLIC population
 )
 
 ############################################
