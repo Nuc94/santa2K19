@@ -15,6 +15,8 @@
 class Population;
 class OffspringPolicy;
 
+using evolution_policies = std::vector< std::pair< unsigned int, std::unique_ptr<OffspringPolicy> > >;
+
 using selection_avoid_method_type = int (Population::*)(int) const;
 using selection_fill_method = void (Population::*) (std::vector<int> &, const unsigned int) const;
 using crossover_policy_type = void (Chromosome::*)(Chromosome &);
@@ -34,6 +36,8 @@ public:
         return this->pop_elems->operator[](pos)->getCost();
     }
     inline unsigned int size() const { return this->pop_elems->size(); }
+    //I need a method to execute an evoulution given a set of policies
+    void evolve(const evolution_policies & policies);
     //list of selection functions, they return an int signaling a position
     //in the vector according to a choice for the element to reproduce
     template<int size>
@@ -70,18 +74,30 @@ private:
     std::unique_ptr< pop_container_type > pop_elems;
     std::vector<int> rank_sel_weights; //This vector is used for rank selection
     int rank_sel_sum;
+    //method which sorts the chromosomes in the population in order of performance
     void sortElems();
+    //method useful at construction to build the weights for performing rank selection
     void buildRankSelWeightsAndSum(unsigned int pop_size);
+    //method to build a selection vector - a vector containing int positions
+    //of elements selected to generate next offspring -
+    std::vector<int> buildSelectionVector(   const evolution_policies & policies,
+                                        const unsigned int sel_dimension) const;
+    //with this method we just obtain a vector with the unique pointers to
+    //chromosomes at the right positions to then perform crossover and mutation
+    std::unique_ptr< pop_container_type > buildNextPopElems(const std::vector<int> & sel_vector) const;
     //private selection method to invoke methods which avoid
     //the previous element selection
     void fillAvoiding(  std::vector<int> & sel_target,
                         const unsigned int sel_size,
-                        selection_avoid_method_type sel_method) const; 
+                        selection_avoid_method_type sel_method) const;
 };
 
 /*  a function useful for rank selection */
 int searchLowLim(int low_lim, int up_lim, int search_objective,
                 const std::vector<int> & sel_weights);
+
+/*  a function to obtain given some policies the next_pop dimension */
+int getNextPopDimension(const evolution_policies & policies);
 
 //And then to define OffspringPolicy
 

@@ -160,3 +160,19 @@ TEST( OFFPOLICYTEST, EliTestOverloop ) {
 
     for(int elem : sel_target) ASSERT_LE(elem, test_pop_size);
 }
+
+TEST( EVOTEST, NextPopIniTest ) {
+    const int test_pop_size = 50;
+    OffspringPolicy OF(&Population::fillByElitism);
+
+    evolution_policies ev_pol;
+
+    ev_pol.push_back( std::make_pair(test_pop_size, std::make_unique<OffspringPolicy>( &Population::fillByTournamentSelect<2> ) ) );
+
+    DataModel DM(DEFAULT_FILEPATH);
+    Population Pop(test_pop_size,DM);
+
+    Pop.evolve(ev_pol);
+
+
+}

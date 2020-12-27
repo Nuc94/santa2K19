@@ -10,6 +10,12 @@ Population::Population(const unsigned int pop_size, const DataModel & input_dm) 
     this->sortElems();
 }
 
+void Population::evolve(const evolution_policies & policies) {
+    int next_pop_dim = getNextPopDimension(policies);
+    std::vector<int> sel_vector = this->buildSelectionVector(policies, next_pop_dim);
+    std::unique_ptr< pop_container_type > pop_elems = this->buildNextPopElems(sel_vector);
+}
+
 void Population::sortElems() {
     std::sort(this->pop_elems->begin(), this->pop_elems->end(),
         []( const std::unique_ptr< Chromosome > & a,
@@ -55,7 +61,7 @@ void Population::buildRankSelWeightsAndSum(unsigned int pop_size) {
 }
 
 void Population::fillByElitism( std::vector<int> & sel_target,
-                        const unsigned int sel_size) const {
+                                const unsigned int sel_size) const {
     //this variable is declared to avoid modulo operation
     int sel = 0;
     for(int i = 0; i < static_cast<int>(sel_size); ++i) {
@@ -65,6 +71,39 @@ void Population::fillByElitism( std::vector<int> & sel_target,
         //that an elitist selection doesn't
         if(sel >= this->pop_elems->size()) sel = 0; 
     }
+}
+
+//method to build a selection vector - a vector containing int positions
+//of elements selected to generate next offspring -
+std::vector<int> Population::buildSelectionVector(   const evolution_policies & policies,
+                                    const unsigned int sel_dimension) const {
+    std::vector<int> sel_result;
+    sel_result.reserve(sel_dimension);
+    for(int i = 0; i < policies.size(); ++i) {
+        policies[i].second->applySelection( this, sel_result, policies[i].first );
+    }
+    return sel_result;
+}
+
+//with this method we just obtain a vector with the unique pointers to
+//chromosomes at the right positions to then perform crossover and mutation
+std::unique_ptr< pop_container_type > Population::buildNextPopElems(const std::vector<int> & sel_vector) const {
+    std::unique_ptr< pop_container_type > next_pop = std::make_unique<pop_container_type>();
+    std::vector<int> copies_remaining( this->pop_elems->size(), 0 );
+    next_pop->reserve( sel_vector.size() );
+    //I start by building the vector telling how many times a certain element
+    //has to be copied in the next population
+    for(int pos: sel_vector) ++copies_remaining[pos];
+    for(int pos: sel_vector) {
+        if( copies_remaining[pos] == 1 ) {
+            next_pop->push_back(std::move( this->pop_elems->operator[](pos) ));
+        }
+        else {
+            next_pop->push_back( std::make_unique<Chromosome>( *(this->pop_elems->operator[](pos)) ) );
+            --copies_remaining[pos];
+        }
+    }
+    return next_pop;
 }
 
 void Population::fillAvoiding(  std::vector<int> & sel_target,
@@ -79,6 +118,8 @@ void Population::fillAvoiding(  std::vector<int> & sel_target,
     }
 }
 
+
+
 /*  a function useful for rank selection */
 int searchLowLim(int low_lim, int up_lim, const int search_objective,
                 const std::vector<int> & sel_weights) {
@@ -89,6 +130,15 @@ int searchLowLim(int low_lim, int up_lim, const int search_objective,
         else low_lim = split_point;
     }
     return low_lim;
+}
+
+/*  a function to obtain given some policies the next_pop dimension */
+int getNextPopDimension(const evolution_policies & policies) {
+    int next_pop_dim = 0;
+    for(int i = 0; i < policies.size(); ++i) {
+        next_pop_dim += policies[i].first;
+    }
+    return next_pop_dim;
 }
 
 
